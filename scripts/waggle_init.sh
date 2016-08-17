@@ -502,6 +502,8 @@ fi
 
 if [ ${RECOVERY_NEEDED} -eq 1 ] ; then
   echo "Warning: Recovery needed !"
+  logger -t waggle_init Recovery process starting...
+
   if [ ${DEBUG} -eq 1 ] ; then
     curl --retry 10 "${DEBUG_HOST}/failovertest?status=recovery_needed" || true
   fi
@@ -655,11 +657,14 @@ if [ ${RECOVERY_NEEDED} -eq 1 ] ; then
     fi
     echo "No automatic recovery. Use argument \"recover\" to invoke recovery."        
   fi
+  logger -t waggle_init Recovery process complete.  (not necessarily successfully)
+
 else
   if [ ${DEBUG} -eq 1 ] ; then
     curl --retry 10 "${DEBUG_HOST}/failovertest?status=recovery_not_needed" || true
   fi    
   echo "all looks good" 
+  logger -t waggle_init     all looks good
 fi
 
 
@@ -676,6 +681,8 @@ set -e
 #
     
 if [ -e ${OTHER_DEVICE}p2 ] ; then    
+  logger -t waggle_init  sync config and cert files: starting...
+
   mount ${OTHER_DEVICE}p2 /media/test/
 
   sleep 1
@@ -703,7 +710,7 @@ if [ -e ${OTHER_DEVICE}p2 ] ; then
     sleep 5
   done
   set -e
-
+  logger -t waggle_init  sync config and cert files: Completed. (not necessarily successfully)
 fi
 
 if [ "${CURRENT_DEVICE_TYPE}x" == "MMCx" ] && [ ${DEBUG} -eq 0 ]; then
